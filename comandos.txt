@@ -1,20 +1,17 @@
-########building dataset
+###BUILDING DATASET###
 convert_dir_to_note_sequences \ --input_dir=/users/lizii/anaconda3/envs/musicproj/clean-midi \ --output_file=/users/lizii/anaconda3/envs/musicproj/tmp/notesequences.tfrecord \ --recursive
 
-######create sequence examples
+###CREATING SEQUENCE EXAMPLES###
 melody_rnn_create_dataset \ --config=attention_rnn \ --input=/users/lizii/anaconda3/envs/musicproj/tmp/notesequences.tfrecord \ --output_dir=/users/lizii/anaconda3/envs/musicproj/tmp/melody_rnn/sequence_examples \ --eval_ratio=0.10
 
-####training
+###TRAINING###
 melody_rnn_train \ --config=attention_rnn \ --run_dir=/users/lizii/anaconda3/envs/musicproj/tmp/melody_rnn/logdir/run1 \ --sequence_example_file=/users/lizii/anaconda3/envs/musicproj/tmp/melody_rnn/sequence_examples/training_melodies.tfrecord \ --hparams="batch_size=64,rnn_layer_sizes=[64,64]" \ --num_training_steps=2000
 
-
-#######evaluating
+###EVALUATING###
 melody_rnn_train \ --config=attention_rnn \ --run_dir=/users/lizii/anaconda3/envs/musicproj/tmp/melody_rnn/logdir/run1 \ --sequence_example_file=/users/lizii/anaconda3/envs/musicproj/tmp/melody_rnn/sequence_examples/eval_melodies.tfrecord \ --hparams="batch_size=64,rnn_layer_sizes=[64,64]" \ --num_training_steps=2000 \ --eval
 
-
-########Run TensorBoard to view the training and evaluation? data.
+###RUNNING TENSORBOARD###
 tensorboard --logdir=/users/lizii/anaconda3/envs/musicproj/tmp/melody_rnn/logdir
 
-
-#####Generate melody
+###GENERATING MELODIES###
 melody_rnn_generate \ --config=attention_rnn \ --run_dir=/users/lizii/anaconda3/envs/musicproj/tmp/melody_rnn/logdir/run1 \ --output_dir=/users/lizii/anaconda3/envs/musicproj/tmp/melody_rnn/generated \ --num_outputs=10 \ --num_steps=128 \ --hparams="batch_size=64,rnn_layer_sizes=[64,64]" \ --primer_melody="[60]"
